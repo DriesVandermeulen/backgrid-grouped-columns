@@ -6,17 +6,17 @@
  Licensed under the MIT @license.
  */
 (function (root, factory) {
-
-  // CommonJS
-  if (typeof exports == "object") {
-    module.exports = factory(require("underscore"), require("backgrid"));
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(["backbone", "backgrid", "underscore"], factory);
+  } else if (typeof exports == "object") {
+    // CommonJS
+    module.exports = factory(require("backbone"), require("backgrid"), require("underscore"));
   }
   // Browser
-  else {
-    factory(root._, root.Backgrid, root.moment);
-  }
+  else factory(root.Backbone, root.Backgrid, root._);
 
-}(this, function (_, Backgrid) {
+}(this, function (Backbone, Backgrid, _) {
   "use strict";
 
   Backgrid.Extension.GroupedHeader = Backgrid.Header.extend({
@@ -30,9 +30,6 @@
       _.extend(this, this.defaults, options.headerOptions || {});
 
       this.columns = options.columns;
-      if (!(this.columns instanceof Backbone.Collection)) {
-        this.columns = new Backgrid.Columns(this.columns);
-      }
 
       var colEvents = "remove change:renderable sort add";
       this.listenTo(this.columns, colEvents, this.render);
